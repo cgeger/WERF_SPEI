@@ -5,7 +5,11 @@
 #set working address to the VPN-connected drive where the data is stored
 setwd("H:/WERFproject")
 
+<<<<<<< HEAD
 #in ACCESS, object bmp is "BMP INFO S02", bmp.types is"tblBMPCODES"
+=======
+#bmp is "BMP INFO S02" table in ACCESS
+>>>>>>> 57fc1d60db3afc5a957fc3e85afa6b0bf0889739
 m5 <- readRDS("data/master.RData")[[5]]
 bmp <- m5
 m36 <- readRDS("data/master.RData")[[36]]
