@@ -139,6 +139,7 @@ ev.precip <- a
 head(ev.precip)
 
 ##### save event table #####
-write.csv(ev.precip,"data/eventprecip.csv") #saved as .csv file in data folder
-saveRDS(ev.precip, "data/eventprecip.Rdata")
+write.csv(ev.precip,"data/eventprecip.csv") #saved as .csv file in data folder in H drive remotely
+saveRDS(ev.precip, "data/eventprecip.Rdata") #save to #H drive remotely
+saveRDS(ev.precip, "C:/Users/caite/Documents/WERF_SPEI/data/eventprecip.Rdata") #local backup
 ev.precip <- readRDS("data/eventprecip.Rdata")
