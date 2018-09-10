@@ -8,7 +8,7 @@ library(dplyr)
 
 ##### import raw df #####
 #set working address to the VPN-connected drive where the data is stored
-setwd("H:\WERFproject")
+setwd("H:/WERFproject")
 
 #event is "EVENT" table in ACCESS
 m9 <- readRDS("H:/WERFproject/data/master.RData")[[9]]
@@ -26,7 +26,6 @@ sum(duplicated.data.frame(event[,-which(names(event) == "Record No")]))
 sum(duplicated.data.frame(precip[,-which(names(precip) == "Record Number")])) #140 duplicates
 
 names(event) #the event table uses a two-factor primary key: NSWID + Storm Event
-
 #make a single primary key by combining NSWID and storm event numbers
 event <- event %>% mutate(pk = paste(event$NSWID, event$`Storm Event`, sep = "_"))
 #make a single primary key for precip by combining Test Site ID and storm event numbers
@@ -63,7 +62,7 @@ event[k,] %>% filter(`Site Name` == "Lakeview 4") %>% arrange(pk) #this one repo
 
 #_drop duplicates from event______________________________________________________
 #drops
-event <- event[!(event$`Record No` %in% c(22979,19502, 19503)), ]
+event <- event[!(event$`Record No` %in% c(22979, 19502, 19503)), ]
 event <- event[!(event$`Site Name` %in% c("Elm Drive", "Lakeview 2", "Lakeview 4")), ]
 ###NO MORE EVENT DUPLICATES (supposedly)
 
@@ -76,16 +75,13 @@ event <- event[!(event$`Site Name` %in% c("Elm Drive", "Lakeview 2", "Lakeview 4
 
 ##### clean event data frame #####
 #rename variables to uniform names
-names(event) 
+names(event)
 names <- c("SITEID", "EVENTNO", "SITENAME", "EVSTARTDATE", "EVSTARTTIME", "EVTYPE",      
            "EVANTEDRY", "EVDESCRIBEANTE", "EVQAQC", "EVComment", "EVRecordNO", "EVpk")
 names(event) <- names
 event$SITEID <- trimws(as.character(event$SITEID))
 event$EVENTNO <- as.integer(event$EVENTNO)
 event$EVSTARTDATE <- ymd(substr(event$EVSTARTDATE, start = 1, stop = 10))
-head(event)
-
-
 
 names(precip) 
 names <- c("SITEID","SITENAME", "MSID", "EVENTNO", "PSTARTDATE", "PSTARTTIME", "PENDDATE","PENDTIME",
@@ -94,9 +90,8 @@ names(precip) <- names
 precip$SITEID <- trimws(as.character(precip$SITEID))
 precip$EVENTNO <- as.integer(precip$EVENTNO)
 precip$PSTARTDATE <- ymd(substr(precip$PSTARTDATE, start = 1, stop = 10))
-head(precip)
 
-#merge event and precip into one table based on pk
+#merge event and precip into one table based on two-factor pk
 a <- merge(event, precip, all = F, by.x = "EVpk", by.y = "Ppk")
 head(a)
 
@@ -105,36 +100,37 @@ names(a)
 k <- which(names(a) %in% c("SITENAME.y", "SITEID.y", "EVENTNO.y"))
 a <- a[,-k]
 k <- which(names(a) %in% c("SITENAME.x", "SITEID.x", "EVENTNO.x"))
-names(a)[k] <- c("SITENAME", "SITEID", "EVENTNO")
+names(a)[k] <- c( "SITEID","EVENTNO","SITENAME")
+head(a)
 
-names(a)
+
 #trim character identifiers
-a$MSID <- as.character(a$MSID)
+a$MSID <- trimws(as.character(a$MSID))
 
 #fix dates
 #check which are more than 48 hours apart
-k <- which(abs(ymd(a$EVSTARTDATE) - ymd(a$PSTARTDATE)) > 2)
+k <- which(abs(ymd(a$EVSTARTDATE) - ymd(a$PSTARTDATE)) > 2) #(there are 300 matches with bad dates)
 a[k,c("EVSTARTDATE", "PSTARTDATE")]
 a <- a[-k,] #remove
 
 #eliminate non-flow data and events with no depth recorded
-rmV <- which(a$EVTYPE != "Runoff" & is.na(a$PDEPTH))
-a <- a[-rmV,]
+k <- which(a$EVTYPE == "Runoff") #139 events that don't record runoff (Baseflow, Other, Snowmelt)
+a <- a[k,]
 a$EVTYPE <- droplevels(a$EVTYPE)
-rmV <- which(a$PDEPTH < 0 | is.na(a$PDEPTH))
+rmV <- which(a$PDEPTH < 0 | is.na(a$PDEPTH)) #135 with error codes reported or no precip value recorded
 a <- a[-rmV,]
 
 #correct factors
 a$PScrn <- factor(tolower(a$PScrn))
+table(a$PScrn)
+rmV <- which(a$PScrn == "no") #230 values screened out
+a <- a[-rmV,]
 
-#convert units
+#convert units to uniform "cm" value
 k <- which(a$PDEPTHU == "in")
 a$PDEPTH[k] <- a$PDEPTH[k] * 2.54
 a$PDEPTHU[k] <- "cm"
 a$PDEPTHU <- droplevels(a$PDEPTHU)
-
-#fix dates
-a$PENDDATE <- parse_date_time(a$PENDDATE, orders = c("m/d/y", "m-d-y", "d-m-y", "d-m-y", "m/d/y H:M:S")) 
 
 head(a)
 
