@@ -138,4 +138,6 @@ ev.precip <- a
 write.csv(ev.precip,"H:/WERFproject/data/eventprecip.csv") #save as .csv file in data folder in H drive remotely
 saveRDS(ev.precip, "H:/WERFproject/data/eventprecip.Rdata") #save as .Rdata file to H drive remotely
 saveRDS(ev.precip, "C:/Users/caite/Documents/WERF_SPEI/data/eventprecip.Rdata") #local backup on C Drive
-ev.precip <- readRDS("data/eventprecip.Rdata") #command to read in remotely
+
+#command to read in doc from H drive
+#ev.precip <- readRDS("data/eventprecip.Rdata")
