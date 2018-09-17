@@ -132,14 +132,10 @@ a$PDEPTH[k] <- a$PDEPTH[k] * 2.54
 a$PDEPTHU[k] <- "cm"
 a$PDEPTHU <- droplevels(a$PDEPTHU)
 
-head(a)
-
 ev.precip <- a
 
-head(ev.precip)
-
 ##### save event table #####
-write.csv(ev.precip,"data/eventprecip.csv") #saved as .csv file in data folder in H drive remotely
-saveRDS(ev.precip, "data/eventprecip.Rdata") #save to #H drive remotely
-saveRDS(ev.precip, "C:/Users/caite/Documents/WERF_SPEI/data/eventprecip.Rdata") #local backup
-ev.precip <- readRDS("data/eventprecip.Rdata")
+write.csv(ev.precip,"H:/WERFproject/data/eventprecip.csv") #save as .csv file in data folder in H drive remotely
+saveRDS(ev.precip, "H:/WERFproject/data/eventprecip.Rdata") #save as .Rdata file to H drive remotely
+saveRDS(ev.precip, "C:/Users/caite/Documents/WERF_SPEI/data/eventprecip.Rdata") #local backup on C Drive
+ev.precip <- readRDS("data/eventprecip.Rdata") #command to read in remotely
