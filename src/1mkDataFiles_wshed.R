@@ -3,7 +3,7 @@
 
 ##### import raw df #####
 #set working address
-setwd("D:/WERFproject")
+setwd("H:/WERFproject")
 
 #wshed is "WATERSHED NS01" table in ACCESS
 m59 <- readRDS("data/master.RData")[[59]]
@@ -34,16 +34,18 @@ wshed$WSA_UNIT <- droplevels(wshed$WSA_UNIT)
 
 #Remove columns with less than 60% data
 #Column 19, "PERI" represents impervious surface, other columns have limited data. 
-#Might be able to add them together for more info
+#Might be able to add them together for more info later, but for now, keep only PERI and basic WS characteristics
 wshed <- wshed[ , c(1:4,6,7,20)]
 
 #rename variables to uniform
 names(wshed)[5] <- "WSArea"
 names(wshed)[6] <- "WSArea_U"
-names(wshed)[7] <- "WSPerc.Impervious"
-
-str(wshed)
+names(wshed)[7] <- "WSPerImp"
 
 ##### save wshed table #####
-write.csv(wshed,"data/wshed.csv") #saved as .csv file in data folder
-saveRDS(wshed, "data/wshed.Rdata")
+write.csv(wshed,"H:/WERFproject/data/wshed.csv") #saved as .csv file to H drive remotely
+saveRDS(wshed, "H:/WERFproject/data/wshed.Rdata") #saved as .Rdata to H drive remotely
+saveRDS(wshed, "C:/Users/caite/Documents/WERF_SPEI/data/wshed.Rdata") #local backup
+
+#command to read in doc from H drive
+#wshed <- readRDS("data/wshed.Rdata")

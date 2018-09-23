@@ -57,7 +57,6 @@ bmp$DesignInfo[k] <- "yes"
 k <- which(bmp$DesignInfo %in% c("No","no","n"))
 bmp$DesignInfo[k] <- "no"
 bmp$DesignInfo <- droplevels(bmp$DesignInfo)
-str(bmp)
 
 #examine facility type classification
 table(bmp$Analysis_Category) #matches CAT_2016 except excludes certain types
@@ -85,6 +84,9 @@ bmp <- bmp[!bmp$BMPCAT_2016 %in% c("CO","LD","OT"),]
 bmp$BMPCAT_2016 <- droplevels(bmp$BMPCAT_2016)
 
 ##### save bmp table #####
-write.csv(bmp,"data/bmp.csv") #saved as .csv file in data folder
-saveRDS(bmp, "data/bmp.Rdata")
-bmp <- readRDS("data/bmp.Rdata")
+write.csv(bmp,"H:/WERFproject/data/bmp.csv") #saved as .csv file to H drive remotely
+saveRDS(bmp, "H:/WERFproject/data/bmp.Rdata") #saved as .Rdata to H drive remotely
+saveRDS(bmp, "C:/Users/caite/Documents/WERF_SPEI/data/bmp.Rdata") #local backup
+
+#command to read in doc from H drive
+#bmp <- readRDS("data/bmp.Rdata")

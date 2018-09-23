@@ -46,17 +46,20 @@ site$STATE <- droplevels(site$STATE)
 table(site$ELVTN_UNT_CD)
 k <- which(site$ELVTN_UNT_CD == "ft")
 site$ELEVATION_MSR[k]  <- round(site$ELEVATION_MSR[k] * 0.3048) #run only once
-site$ELEVATION_MSR <- round(site$ELEVATION_MSR, 2)
+site$ELEVATION_MSR <- round(site$ELEVATION_MSR, 2) #round all elevations to the nearest cm
 #now all elevations in meters
 site$ELVTN_UNT_CD[k] <- "m"
 site$ELVTN_UNT_CD <- droplevels(site$ELVTN_UNT_CD)
 
 #select variables to keep
+names(site)
 keep <- c("SITEID", "SITENAME", "STRUCT", "CITY", "STATE", "COUNTRY",
           "ELEVATION_MSR", "ELVTN_UNT_CD", "RF3_RIVER_REACH_CD", 
-          "NO_WS", "NO_BMPS", "FINAL_LAT", "FINAL_LONG", "EPA Rain Zone")
+          "NO_WS", "NO_BMPS", "FINAL_LAT", "FINAL_LONG", "EPA Rain Zone", "COMMENTS")
 k <- which(names(site) %in% keep)
 site <- site[,k]
+
+head(site)
 
 #rename all to uniform names
 names(site)[3:14] <- paste("SITE", names(site)[3:14], sep = "")
@@ -64,8 +67,10 @@ names(site)[7] <- "SITE_ELVTN"
 names(site)[8] <- "SITE_ELVTN_U"
 names(site)[9] <- "SITEHUC8"
 
-str(site)
-
 ##### save site table #####
-write.csv(site,"data/site.csv") #saved as .csv file in data folder
-saveRDS(site, "data/site.Rdata")
+write.csv(site,"H:/WERFproject/data/site.csv") #saved as .csv file to H drive remotely
+saveRDS(site, "H:/WERFproject/data/site.Rdata") #saved as .Rdata to H drive remotely
+saveRDS(site, "C:/Users/caite/Documents/WERF_SPEI/data/site.Rdata") #local backup
+
+#command to read in doc from H drive
+#site <- readRDS("data/site.Rdata")
